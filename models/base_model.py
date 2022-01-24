@@ -8,10 +8,12 @@ from datetime import datetime
 import uuid
 import models
 
+
 class BaseModel:
     """
     BaseModel class that defines all common attributes/methods
     """
+
     def __init__(self):
         """
         Initializes Base Instance
@@ -25,7 +27,7 @@ class BaseModel:
         Returns string representation of Base Instance
         """
         return "[{}] ({}) {}".format(self.__class__.__name__,
-                                      self.id, self.__dict__)
+                                     self.id, self.__dict__)
 
     def save(self):
         """
