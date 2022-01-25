@@ -6,7 +6,7 @@ Base Model class
 
 from datetime import datetime
 import uuid
-import models
+from models import storage
 
 
 class BaseModel:
@@ -17,6 +17,10 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """
         Initializes Base Instance
+
+        Args:
+            args: list of arguments
+            kwargs: dictionary of arguments
         """
         if kwargs:
             self.id = str(uuid.uuid4())
@@ -35,6 +39,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
+            storage.new(self)
 
     def __str__(self):
         """
@@ -49,6 +54,7 @@ class BaseModel:
         with the current datetime
         """
         self.update_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """
@@ -56,6 +62,6 @@ class BaseModel:
         """
         new_dict = dict(self.__dict__)
         new_dict['__class__'] = self.__class__.__name__
-        new_dict['created_at'] = self.create_at.isoformat()
-        new_dict['updated_at'] = self.update_at.isoformat()
+        new_dict['created_at'] = self.created_at.isoformat()
+        new_dict['updated_at'] = self.updated_at.isoformat()
         return new_dict
