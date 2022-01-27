@@ -1,19 +1,18 @@
-#!/usr/bin/python3
+#!usr/bin/python3
 """
 File Storage class
 """
 
 import json
-import os
+from models.base_model import BaseModel
 
 
 class FileStorage:
     """
     FileStorage class
-
     Attributes:
-        __file_path: path to the JSON file
-        __objects: dictionary of objects
+        self.__file_path: path to the JSON file
+        self.__objects: dictionary of objects
     """
 
     __file_path = "file.json"
@@ -23,37 +22,37 @@ class FileStorage:
         """
         Returns the dictionary object
         """
-        return FileStorage.__objects
+        return self.__objects
 
     def new(self, obj):
         """
         Sets in __objects the obj with key <obj class name>.id
-
         Args:
             obj: object to add
         """
-        obj_name = obj.__class__.__name__
-        FileStorage.__objects["{}.{}".format(obj_name, obj.id)] = obj
+        ind = obj.__class__.__name__ + "." + obj.id
+        self.__objects[ind] = obj
 
     def save(self):
         """
         Serializes __objects attribute to JSON file
         """
-        obj_dict = FileStorage.__objects
-        obj_dict = {obj: odict[obj].to_dict() for obj in odict.keys()}
-        with open(FileStorage.__file_path, "w") as f:
-            json.dump(obj_dict, f)
+        dicti = {}
+        for x in self.__objects:
+            dicti[x] = self.__objects[x].to_dict()
+        with open(self.__file_path, "w") as f:
+            json.dump(dicti, f)
 
     def reload(self):
         """
         Deserializes the JSON file to __objects attribute
         """
         try:
-            with open(FileStorage.__file_path) as f:
-                obj_dict = json.load(f)
-                for o in obj_dict.values():
-                    cls_name = o["__class__"]
-                    del o["__class__"]
-                    self.new(eval(cls_name)(**o))
-        except FileNotFoundError:
-            return
+            with open(self.__file_path, "r") as f:
+                jo = json.load(f)
+            for obj in jo.values():
+                cls_name = obj["__class__"]
+                del obj["__class__"]
+                self.new(eval(cls_name)(**obj))
+        except:
+            pass
