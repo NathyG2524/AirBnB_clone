@@ -122,9 +122,8 @@ class HBNBCommand(cmd.Cmd):
                             if len(args) < 4:
                                 print("** value missing **")
                             else:
-                                args[2] = args[2].split("=")
                                 setattr(storage.all()[key],
-                                        args[2][0], args[2][1])
+                                        args[2], args[3])
                                 storage.save()
 
 
