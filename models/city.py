@@ -2,10 +2,11 @@
 """
 city  class
 """
+
 from models.base_model import BaseModel
 
 
 class City(BaseModel):
-    """detail of city"""
+    """Class that represents city"""
     state_id = ""
     name = ""

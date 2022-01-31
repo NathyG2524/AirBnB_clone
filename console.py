@@ -7,10 +7,22 @@ console 0.0.1
 from ast import Return
 import cmd
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.amenity import Amenity
 from models import storage
 
 classes = {
     "BaseModel": BaseModel,
+    "User": User,
+    "State": State,
+    "City": City,
+    "Place": Place,
+    "Review": Review,
+    "Amenity": Amenity
 }
 class_list = []
 for key in classes:
@@ -93,12 +105,14 @@ class HBNBCommand(cmd.Cmd):
         """Prints string representation of all instances"""
         if args == "":
             print("** class name missing **")
+        elif args not in class_list:
+            print("** class doesn't exist **")
         else:
-            args = args.split()
-            if args[0] not in class_list:
-                print("** class doesn't exist **")
-            else:
-                print(storage.all())
+            objects = []
+            for key in storage.all().values():
+                if key.__class__.__name__ == args:
+                    objects.append(str(key))
+            print(objects)
 
     def do_update(self, args):
         """Updates an instance based on the class name and id"""
