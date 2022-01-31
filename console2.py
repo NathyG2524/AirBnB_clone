@@ -6,6 +6,8 @@ console 0.0.1
 
 from ast import Return
 import cmd
+import re
+import models
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -137,6 +139,44 @@ class HBNBCommand(cmd.Cmd):
                                 setattr(storage.all()[key],
                                         args[2], args[3])
                                 storage.save()
+
+    def get_objects(self, instance=''):
+        """Gets the elements created by the console
+        This method takes care of obtaining the information
+        of all the instances created in the file `objects.json`
+        that is used as the storage engine.
+               """
+        objects = models.storage.all()
+        if instance:
+            keys = objects.keys()
+            return [str(val) for key, val in objects.items()
+                    if key.startswith(instance)]
+        return [str(val) for key, val in objects.items()]
+
+    def default(self, args):
+        '''
+
+        '''
+        if '.' in args:
+            splitted = re.split('[.(),]', args)
+            class_name = splitted[0]
+            method_name = splitted[1]
+            if class_name in class_list:
+                if method_name == 'all':
+                    print(self.get_objects(class_name))
+                elif method_name == 'count':
+                    print(len(self.get_objects(class_name)))
+                elif method_name == 'show':
+                    class_id = splitted[2][1:-1]
+                    self.do_show(class_name + ' ' + class_id)
+                elif method_name == 'destroy':
+                    class_id = splitted[2][1:-1]
+                    self.do_destroy(class_name + ' ' + class_id)
+                elif method_name == 'update':
+                    class_id = splitted[2][1:-1]
+                    print(splitted)
+                    self.do_update(class_name + ' ' + class_id + ' ' + splitted[3] + ' ' + splitted[4])
+
 
 
 if __name__ == '__main__':
