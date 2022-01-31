@@ -4,6 +4,7 @@ File Storage class
 """
 
 import json
+from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
