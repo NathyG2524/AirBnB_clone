@@ -2,11 +2,12 @@
 """
 Place class
 """
+
 from models.base_model import BaseModel
 
 
 class Place(BaseModel):
-    """detail of Place """
+    """Class that represents Place """
     city_id = ""
     user_id = ""
     name = ""

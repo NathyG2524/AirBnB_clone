@@ -6,14 +6,12 @@ File Storage class
 import json
 from models.amenity import Amenity
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
 from models.city import City
 from models.place import Place
 from models.review import Review
-from models.state import State
-from models.user import User
-
-classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
-           "Place": Place, "Review": Review, "State": State, "User": User}
+from models.amenity import Amenity
 
 
 class FileStorage:
@@ -31,7 +29,7 @@ class FileStorage:
         """
         Returns the dictionary object
         """
-        return self.__objects
+        return FileStorage.__objects
 
     def new(self, obj):
         """
@@ -39,29 +37,43 @@ class FileStorage:
         Args:
             obj: object to add
         """
-        ind = obj.__class__.__name__ + "." + obj.id
-        self.__objects[ind] = obj
+        obj_name = obj.__class__.__name__
+        FileStorage.__objects["{}.{}".format(obj_name, obj.id)] = obj
 
     def save(self):
         """
         Serializes __objects attribute to JSON file
         """
-        dicti = {}
-        for x in self.__objects:
-            dicti[x] = self.__objects[x].to_dict()
+        dicti = FileStorage.__objects
+        obj_dict = {obj: dicti[obj].to_dict() for obj in dicti.keys()}
         with open(self.__file_path, "w") as f:
-            json.dump(dicti, f)
+            json.dump(obj_dict, f)
 
     def reload(self):
         """
         Deserializes the JSON file to __objects attribute
         """
         try:
-            with open(self.__file_path, "r") as f:
-                jo = json.load(f)
-            for obj in jo.values():
-                cls_name = obj["__class__"]
-                del obj["__class__"]
-                self.new(eval(cls_name)(**obj))
-        except:
+            with open(FileStorage.__file_path, "r") as f:
+                obj_dict = json.load(f)
+                for obj in obj_dict.values():
+                    class_name = obj["__class__"]
+                    del obj["__class__"]
+                    self.new(eval(class_name)(**obj))
+        except FileNotFoundError:
             pass
+
+    def classes(self):
+        """
+        Returns the list of class names
+        """
+        classes = {
+            "BaseModel": BaseModel,
+            "User": User,
+            "State": State,
+            "City": City,
+            "Place": Place,
+            "Review": Review,
+            "Amenity": Amenity
+        }
+        return classes

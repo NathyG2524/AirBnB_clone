@@ -2,11 +2,10 @@
 """
 Review class
 """
+
 from models.base_model import BaseModel
 
 
-class Review(BaseModel):
-    """detail of Review """
-    place_id = ""
-    user_id = ""
-    text = ""
+class State(BaseModel):
+    """Class that represents a state """
+    name = ""
