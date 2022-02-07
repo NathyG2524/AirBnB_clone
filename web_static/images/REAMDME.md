@@ -1,0 +1,1 @@
+folder which images and icons are stored
